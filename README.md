@@ -72,3 +72,78 @@ The frontend is a **React + MUI** app consuming the backend via REST APIs.
 
 The frontend uses a **feature-based architecture**, not Atomic Design:
 
+features/
+projects/
+claims/
+shared/
+components/
+hooks/
+utils/
+
+This mirrors modern SaaS dashboards and keeps domain logic isolated.
+
+---
+
+### 🟧 2. Serverless AWS Backend
+
+Backend follows a clean layered architecture:
+
+handlers/
+services/
+repositories/
+types/
+utils/
+
+Reasons:
+
+- Thin, testable Lambda handlers  
+- Reusable domain logic  
+- Easy to extend with new features  
+
+---
+
+### 🟪 3. DynamoDB as the Persistence Layer
+
+Benefits:
+
+- Zero maintenance  
+- PAY_PER_REQUEST cost model  
+- Perfect for simple key-value workloads  
+- GSI supports querying claims by projectId  
+
+---
+
+### 🟨 4. Query-Param Filtering for Claims
+
+GET /claims?projectId=abc123
+
+Supports:
+
+- All claims  
+- Claims for a specific project  
+
+Frontend uses `useSearchParams()` for stateful filtering.
+
+---
+
+### 🟩 5. Custom Data Hooks
+
+Example: `useProject(projectId)`
+
+- Handles loading, error, null states  
+- Simplifies page components  
+- Reusable across domain features  
+
+
+---
+
+## ▶ Running the Backend (Serverless)
+
+### 1. Install dependencies
+```bash
+cd backend
+npm install
+
+2. Run locally (no AWS required)
+
+npm run offline
