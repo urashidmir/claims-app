@@ -147,3 +147,34 @@ npm install
 2. Run locally (no AWS required)
 
 npm run offline
+
+Starts:
+
+serverless-offline on port 5000
+
+DynamoDB Local on port 8000
+
+3. Deploy to AWS (optional)
+
+Option A — Using AWS Profile
+
+npm run deploy
+
+Option B — Using environment variables
+export AWS_ACCESS_KEY_ID=xxxx
+export AWS_SECRET_ACCESS_KEY=xxxx
+export AWS_REGION=us-east-1
+npm run deploy
+
+▶ Running the Frontend (React)
+Install dependencies
+cd frontend
+npm install
+
+Run
+npm run dev
+
+
+Ensure your .env contains:
+
+VITE_API_BASE_URL=http://localhost:5000
