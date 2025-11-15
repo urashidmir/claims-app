@@ -1,0 +1,206 @@
+service: claims-service
+
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: us-east-1
+  stage: dev
+
+
+  environment:
+    CLAIMS_TABLE: ClaimsTable
+    PROJECTS_TABLE: ProjectsTable
+
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - logs:CreateLogGroup
+        - logs:CreateLogStream
+        - logs:PutLogEvents
+      Resource: "arn:aws:logs:*:*:*"
+
+    - Effect: Allow
+      Action:
+        - dynamodb:PutItem
+        - dynamodb:GetItem
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource:
+        - arn:aws:dynamodb:us-east-1:*:table/ClaimsTable
+        - arn:aws:dynamodb:us-east-1:*:table/ProjectsTable
+        - arn:aws:dynamodb:us-east-1:*:table/ClaimsTable/index/ProjectIdIndex
+
+functions:
+  # CLAIMS
+  createClaim:
+    handler: src/handlers/claimsHandler.createClaimHandler
+    events:
+      - http:
+          path: claims
+          method: post
+          cors: ${self:custom.cors}
+
+  getClaims:
+    handler: src/handlers/claimsHandler.getClaimsHandler
+    events:
+      - http:
+          path: claims
+          method: get
+          cors: ${self:custom.cors}
+
+  updateClaim:
+    handler: src/handlers/claimsHandler.updateClaimHandler
+    events:
+      - http:
+          path: claims/{id}
+          method: patch
+          cors: ${self:custom.cors}
+
+  deleteClaim:
+    handler: src/handlers/claimsHandler.deleteClaimHandler
+    events:
+      - http:
+          path: claims/{id}
+          method: delete
+          cors: ${self:custom.cors}
+
+  updateClaimStatus:
+    handler: src/handlers/claimsHandler.updateClaimStatusHandler
+    events:
+      - http:
+          path: claims/{id}/status
+          method: patch
+          cors: ${self:custom.cors}
+
+  # PROJECTS
+  createProject:
+    handler: src/handlers/projectsHandler.createProjectHandler
+    events:
+      - http:
+          path: projects
+          method: post
+          cors: ${self:custom.cors}
+
+  getProjects:
+    handler: src/handlers/projectsHandler.getProjectsHandler
+    events:
+      - http:
+          path: projects
+          method: get
+          cors: ${self:custom.cors}
+
+  getProject:
+    handler: src/handlers/projectsHandler.getProjectHandler
+    events:
+      - http:
+          path: projects/{id}
+          method: get
+          cors: ${self:custom.cors}
+
+  updateProject:
+    handler: src/handlers/projectsHandler.updateProjectHandler
+    events:
+      - http:
+          path: projects/{id}
+          method: patch
+          cors: ${self:custom.cors}
+
+  deleteProject:
+    handler: src/handlers/projectsHandler.deleteProjectHandler
+    events:
+      - http:
+          path: projects/{id}
+          method: delete
+          cors: ${self:custom.cors}
+
+resources:
+  Resources:
+    ProjectsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.PROJECTS_TABLE}
+        AttributeDefinitions:
+          - AttributeName: projectId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: projectId
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+
+    ClaimsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.CLAIMS_TABLE}
+        AttributeDefinitions:
+          - AttributeName: claimId
+            AttributeType: S
+          - AttributeName: projectId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: claimId
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        GlobalSecondaryIndexes:
+          - IndexName: ProjectIdIndex
+            KeySchema:
+              - AttributeName: projectId
+                KeyType: HASH
+              - AttributeName: claimId
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+
+plugins:
+  - serverless-esbuild
+  - serverless-dynamodb-local
+  - serverless-offline
+
+custom:
+  apiGateway:
+    restApi:
+      metrics: true
+
+  # Global CORS for REST API
+  cors:
+    origins:
+      - "*"
+    headers:
+      - Content-Type
+      - Authorization
+      - X-Amz-Date
+      - X-Api-Key
+      - X-Amz-Security-Token
+    methods:
+      - GET
+      - POST
+      - PATCH
+      - DELETE
+    allowCredentials: false
+
+  esbuild:
+    bundle: true
+    minify: false
+    sourcemap: true
+    target: "node18"
+    platform: "node"
+    outdir: src
+    keepOutputDirectory: true
+    external:
+      - aws-sdk
+
+  dynamodb:
+    stages:
+      - dev
+    start:
+      port: 8000
+      inMemory: true
+      migrate: true
+      heapInitial: 200m
+      heapMax: 1g
+
+  serverless-offline:
+    httpPort: 5000

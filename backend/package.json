@@ -1,0 +1,33 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Serverless Lambda + DynamoDB backend for claims/projects",
+  "scripts": {
+    "deploy": "serverless deploy",
+    "remove": "serverless remove",
+    "dynamo:install": "serverless dynamodb install",
+    "dynamo:start": "serverless dynamodb start",
+    "lint": "eslint 'src/**/*.{ts,tsx}'",
+    "lint:fix": "eslint 'src/**/*.{ts,tsx}' --fix"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.931.0",
+    "@aws-sdk/lib-dynamodb": "^3.931.0"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.137",
+    "@types/node": "^24.10.0",
+    "@typescript-eslint/eslint-plugin": "^8.46.4",
+    "@typescript-eslint/parser": "^8.46.4",
+    "eslint": "^9.39.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "prettier": "^3.6.2",
+    "serverless": "^3.40.0",
+    "serverless-dynamodb-local": "^0.2.40",
+    "serverless-esbuild": "^1.55.2",
+    "serverless-offline": "^13.9.0",
+    "typescript": "^5.9.3"
+  }
+}
