@@ -12,38 +12,12 @@ This repository contains a full-stack application for tracking claims
 
 ## 📦 Table of Contents
 
-- [Overview](#-overview)
 - [Tech Stack](#-tech-stack)
-- [Architecture Decisions](#-architecture-decisions)
-- [Project Structure](#-project-structure)
 - [Running the Backend (Serverless)](#-running-the-backend-serverless)
 - [Running the Frontend (React)](#-running-the-frontend-react)
-- [Environment Variables](#-environment-variables)
+- [Architecture Decisions](#-architecture-decisions)
 - [AI Usage Notes](#-ai-usage-notes)
 - [Improvements With More Time](#-improvements-with-more-time)
-- [What I Can Walk Through in Interview](#-what-i-can-walk-through-in-interview)
-
----
-
-## 🧩 Overview
-
-This project implements a simple **Claims Management** system with two core domains:
-
-### ✔ Projects
-- Create projects  
-- View project list  
-- Navigate to project-specific claims  
-
-### ✔ Claims
-- Create claims  
-- View all claims or claims filtered by project  
-- Update claim status  
-- Validate date ranges, amounts, and required fields  
-
-The backend is fully serverless, deployed on **AWS Lambda + API Gateway + DynamoDB**, with local development supported by **serverless-offline** and **DynamoDB Local**.
-
-The frontend is a **React + MUI** app consuming the backend via REST APIs.
-
 ---
 
 ## 🛠 Tech Stack
@@ -51,18 +25,65 @@ The frontend is a **React + MUI** app consuming the backend via REST APIs.
 ### Frontend
 - React + TypeScript  
 - Material UI  
-- React Router  
+- React Router
+- React Query  
 - Vite  
 
 ### Backend
 - Serverless Framework (v3)  
 - AWS Lambda  
 - API Gateway  
-- DynamoDB (PAY_PER_REQUEST)  
-- Node.js 18  
-- serverless-dynamodb-local  
-- serverless-offline  
-- esbuild bundling  
+- DynamoDB
+- Node.js 18 
+
+---
+
+
+## ▶ Running the Backend (Serverless)
+
+### 1. Install dependencies
+```bash
+cd backend
+npm install
+```
+
+2. Run locally (no AWS required)
+
+npm run offline
+
+Starts:
+
+serverless-offline on port 5000
+
+DynamoDB Local on port 8000
+
+3. Deploy to AWS (optional)
+
+Option A — Using AWS Profile
+
+npm run deploy
+
+Option B — Using environment variables
+export AWS_ACCESS_KEY_ID=xxxx
+export AWS_SECRET_ACCESS_KEY=xxxx
+export AWS_REGION=us-east-1
+npm run deploy
+
+▶ Running the Frontend (React)
+Install dependencies
+cd frontend
+npm install
+
+Run
+npm run dev
+
+
+Ensure your .env contains:
+
+VITE_API_BASE_URL=http://localhost:5000
+
+
+
 
 ---
 
@@ -135,46 +156,3 @@ Example: `useProject(projectId)`
 - Reusable across domain features  
 
 
----
-
-## ▶ Running the Backend (Serverless)
-
-### 1. Install dependencies
-```bash
-cd backend
-npm install
-
-2. Run locally (no AWS required)
-
-npm run offline
-
-Starts:
-
-serverless-offline on port 5000
-
-DynamoDB Local on port 8000
-
-3. Deploy to AWS (optional)
-
-Option A — Using AWS Profile
-
-npm run deploy
-
-Option B — Using environment variables
-export AWS_ACCESS_KEY_ID=xxxx
-export AWS_SECRET_ACCESS_KEY=xxxx
-export AWS_REGION=us-east-1
-npm run deploy
-
-▶ Running the Frontend (React)
-Install dependencies
-cd frontend
-npm install
-
-Run
-npm run dev
-
-
-Ensure your .env contains:
-
-VITE_API_BASE_URL=http://localhost:5000
