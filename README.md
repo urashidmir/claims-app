@@ -75,12 +75,6 @@ npm install
 npm run dev
 ```
 
-
-Ensure your .env contains:
-
-VITE_API_BASE_URL=http://localhost:5000
-
-
 ---
 
 ## 🏗 Architecture Decisions
