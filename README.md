@@ -173,9 +173,7 @@ Example: `useProject(projectId)`
 
 ## 🤖 AI Usage Notes
 
-- ChatGPT was used to review architecture and design patterns.
-- AI assisted with TypeScript types, error-handling and debugging.
-- All AI-generated code was manually reviewed, optimized, and verified before committing.
+AI tools (primarily ChatGPT) were used to evaluate architecture decisions, to accelerate certain parts of the build, including Serverless configuration, and to debug and optimize application. All AI-generated code was manually reviewed and validated before being incorporated. During development, I discovered that AI suggestions sometimes mismatched library versions (e.g., Serverless Framework v3 vs older syntax, DynamoDB SDK differences, and Material UI API changes). These discrepancies required manual correction and cross-checking against official documentation. While AI provided useful scaffolding and architectural guidance, final implementation decisions, version alignment, and debugging were performed manually to ensure correctness and maintainability.
 
 ---
 
