@@ -9,3 +9,7 @@ export interface CreateProjectInput {
   projectName: string;
   companyName: string;
 }
+
+export interface UpdateProjectInput {
+  projectName: string;
+}
