@@ -102,50 +102,76 @@ Frontend consumes the backend API via environment variable VITE_API_URL.
 
 ## 🏗 Architecture Decisions
 
-### 🟦 1. Feature-Based Frontend Structure
+### 🟦 1. Monorepo Structure (Frontend + Backend in one repo)
 
-The frontend uses a **feature-based architecture**, not Atomic Design:
-
-features/
-projects/
-claims/
-shared/
-components/
-hooks/
-utils/
-
-This mirrors modern SaaS dashboards and keeps domain logic isolated.
+I chose a monorepo structure to keep the frontend and backend codebases close together. This makes it easier to share domain knowledge, onboard quickly, test end-to-end flows, and evolve the domain (Company → Project → Claim) consistently. Both apps are isolated (their own package.json) but versioned and managed in a single repository.
 
 ---
 
-### 🟧 2. Serverless AWS Backend
+### 🟧 2. Serverless Backend on AWS Lambda
 
-Backend follows a clean layered architecture:
+The backend uses the Serverless Framework with AWS Lambda + API Gateway, chosen for:
 
-handlers/
-services/
-repositories/
-types/
-utils/
+- Zero-maintenance compute
+- Pay-per-execution cost model
+- Auto-scaling
+- Simple deployment pipeline
 
-Reasons:
-
-- Thin, testable Lambda handlers  
-- Reusable domain logic  
-- Easy to extend with new features  
+Handlers are intentionally thin, delegating logic to service and repository layers for testability.
 
 ---
 
-### 🟪 3. DynamoDB as the Persistence Layer
+### 🟪 3. DynamoDB as the Database
+
+DynamoDB was selected because:
+
+- It handles simple key-value and lookup patterns efficiently
+- Offers fast queries on indexed attributes
+- Works perfectly with serverless architectures
+- Eliminates operational overhead (no servers, no patching)
+
+A GSI (ProjectIdIndex) allows fetching all claims belonging to a project efficiently.
+
+---
+
+### 🟨 4. Repository Pattern for Backend Data Access
+
+The backend follows a layered architecture:
+
+Handlers → Services → Repositories → DynamoDB
 
 Benefits:
-
-- Zero maintenance  
-- PAY_PER_REQUEST cost model  
-- Perfect for simple key-value workloads  
-- GSI supports querying claims by projectId  
+- Easier unit testing
+- Encapsulated data access logic
+- Possible future migrations (e.g., RDS or DocumentDB) with minimal API changes
 
 ---
+
+### 🟨 5. Handling Ambiguous Requirements with Realistic Domain Modeling
+The prompt requirements were intentionally high-level, so I designed the domain using realistic assumptions:
+
+- A Company has many Projects
+- A Project has many Claims
+- Claims reference both projectId and its company name (later removed for normalization)
+- UI pages reflect these relationships:
+    Project list → Project detail → Claims list → Claim form
+
+This grounded approach ensures the UI and data model match typical enterprise claim processes.
+
+---
+
+### 🟨 6. React Query for Data Fetching & Caching
+
+React Query was chosen for:
+
+- Automatic caching of projects and claims
+- Background refetching
+- Smoother UI updates
+- Simplified loading/error state management
+- Built-in invalidation on mutations (create/update claim/project)
+
+It significantly reduces boilerplate and makes the UI more resilient.
+
 
 ### 🟨 4. Query-Param Filtering for Claims
 
