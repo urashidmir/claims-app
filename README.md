@@ -1,8 +1,11 @@
 # Claims Tracker App — Fullstack Serverless App (Vite + AWS + TypeScript)
 
-A claims tracker MVP built with an AWS-first approach.
+A claims-tracking MVP built using an AWS-first approach.
 
-This repository contains a full-stack application for tracking claims
+This project is organized as a monorepo, containing both the frontend and backend applications in a single repository.
+Each app is fully isolated, has its own dependencies, its own build system, and can be developed or deployed independently.
+
+This repository contains
 
 - The **backend** runs on AWS Lambda with API Gateway and DynamoDB, using the Serverless Framework and TypeScript.
 - The **frontend** is a React + TypeScript app built with Vite, consuming the backend via a REST API.
@@ -35,7 +38,8 @@ This repository contains a full-stack application for tracking claims
 - AWS Lambda  
 - API Gateway  
 - DynamoDB
-- Node.js 18 
+- Node.js 18
+- Typescript
 
 ---
 
