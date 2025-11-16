@@ -60,20 +60,25 @@ export AWS_SECRET_ACCESS_KEY=xxxx
 export AWS_REGION=us-east-1
 npm run deploy
 
-▶ Running the Frontend (React)
-Install dependencies
+
+## ▶ Running the Frontend (React)
+
+### 1. Install dependencies
+```bash
 cd frontend
 npm install
+```
 
-Run
+### 2. Run the app
+
+```bash
 npm run dev
+```
 
 
 Ensure your .env contains:
 
 VITE_API_BASE_URL=http://localhost:5000
-
-
 
 
 ---
