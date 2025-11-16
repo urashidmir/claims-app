@@ -180,13 +180,19 @@ AI tools (primarily ChatGPT) were used to evaluate architecture decisions, to ac
 ## 🚀 Improvements With More Time
 
 ### 🟨 1. Authentication and Authorization
+- AWS Cognito or Auth0
+- Role-based access (e.g. submitter vs. reviewer)
 
 ### 🟨 2. Validation layer
 - Add Zod schemas
 - Share types between FE & BE
 
-### 🟨 3. Optimistic updates
-Improve user experience with instant state updates.
+
+### 🟨 3. Error handling & user feedback
+- Standardize error handling with consistent structured error responses
+- Friendly user messaging
+- Logging
+
 
 ### 🟨 4. Automated Testing
 - Unit tests for handlers/services
@@ -194,5 +200,5 @@ Improve user experience with instant state updates.
 
 ### 🟨 5. CI/CD
 - GitHub Actions
-- Automated test + deploy pipeline
+- Automated tests + deploy pipeline
 
