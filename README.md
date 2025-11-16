@@ -1,5 +1,4 @@
 # Claims Tracker App — Fullstack Serverless App (Vite + AWS + TypeScript)
-
 A claims-tracking MVP built using an AWS-first approach.
 
 This project is organized as a monorepo, containing both the frontend and backend applications in a single repository.
@@ -103,13 +102,11 @@ Frontend consumes the backend API via environment variable VITE_API_URL.
 ## 🏗 Architecture Decisions
 
 ### 🟦 1. Monorepo Structure (Frontend + Backend in one repo)
-
 I chose a monorepo structure to keep the frontend and backend codebases close together. This makes it easier to share domain knowledge, onboard quickly, test end-to-end flows, and evolve the domain (Company → Project → Claim) consistently. Both apps are isolated (their own package.json) but versioned and managed in a single repository.
 
 ---
 
-### 🟧 2. Serverless Backend on AWS Lambda
-
+### 🟧 2. AWS-First Serverless Backend
 The backend uses the Serverless Framework with AWS Lambda + API Gateway, chosen for:
 
 - Zero-maintenance compute
@@ -138,21 +135,21 @@ A GSI (ProjectIdIndex) allows fetching all claims belonging to a project efficie
 
 The backend follows a layered architecture:
 
-Handlers → Services → Repositories → DynamoDB
+**Handlers → Services → Repositories → DynamoDB**
 
 Benefits:
+
 - Easier unit testing
 - Encapsulated data access logic
 - Possible future migrations (e.g., RDS or DocumentDB) with minimal API changes
 
 ---
 
-### 🟨 5. Handling Ambiguous Requirements with Realistic Domain Modeling
-The prompt requirements were intentionally high-level, so I designed the domain using realistic assumptions:
-
-- A Company has many Projects
-- A Project has many Claims
-- Claims reference both projectId and its company name (later removed for normalization)
+### 🟨 5. Realistic Domain Modeling
+The original problem statement was intentionally open-ended. I modelled the domain using typical enterprise patterns:
+- A **Company** has many **Projects**
+- A **Project** has many **Claims**
+- **Claims** reference both projectId and its company name (later removed for normalization)
 - UI pages reflect these relationships:
     Project list → Project detail → Claims list → Claim form
 
@@ -161,7 +158,6 @@ This grounded approach ensures the UI and data model match typical enterprise cl
 ---
 
 ### 🟨 6. React Query for Data Fetching & Caching
-
 React Query was chosen for:
 
 - Automatic caching of projects and claims
@@ -173,26 +169,13 @@ React Query was chosen for:
 It significantly reduces boilerplate and makes the UI more resilient.
 
 
-### 🟨 7. Query-Param Filtering for Claims
+### 🟩 7. Custom Reusable Hooks
+Example: `useProject(projectId)` centralizes:
+- Loading logic
+- Error handling
+- Reusability across pages
 
-GET /claims?projectId=abc123
-
-Supports:
-
-- All claims  
-- Claims for a specific project  
-
-Frontend uses `useSearchParams()` for stateful filtering.
-
----
-
-### 🟩 8. Custom Data Hooks
-
-Example: `useProject(projectId)`
-
-- Handles loading, error, null states  
-- Simplifies page components  
-- Reusable across domain features  
+This keeps React components clean and focused on UI.
 
 
 ---
