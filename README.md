@@ -18,6 +18,7 @@ This repository contains a full-stack application for tracking claims
 - [Architecture Decisions](#-architecture-decisions)
 - [AI Usage Notes](#-ai-usage-notes)
 - [Improvements With More Time](#-improvements-with-more-time)
+
 ---
 
 ## 🛠 Tech Stack
@@ -148,8 +149,22 @@ Example: `useProject(projectId)`
 
 ---
 
-## AI Usage Notes
+## 🤖 AI Usage Notes
 
 - ChatGpt was used to evaluate design decisions.
 - AI assisted with writing TypeScript types, React Query hooks, and error-handling patterns.
 - No AI-generated code was used without manual review and testing.
+
+---
+
+## 🤖 Improvements With More Time
+
+### 🟨 1. Authentication and Authorization
+
+### 🟨 2. Validation layer
+
+### 🟨 3. Optimistic updates
+
+### 🟨 4. Automated Testing
+
+### 🟨 5. CI/CD
