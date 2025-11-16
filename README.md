@@ -173,7 +173,7 @@ React Query was chosen for:
 It significantly reduces boilerplate and makes the UI more resilient.
 
 
-### 🟨 4. Query-Param Filtering for Claims
+### 🟨 7. Query-Param Filtering for Claims
 
 GET /claims?projectId=abc123
 
@@ -186,7 +186,7 @@ Frontend uses `useSearchParams()` for stateful filtering.
 
 ---
 
-### 🟩 5. Custom Data Hooks
+### 🟩 8. Custom Data Hooks
 
 Example: `useProject(projectId)`
 
