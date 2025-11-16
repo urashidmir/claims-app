@@ -1,8 +1,8 @@
-# Claims App — Fullstack Serverless App (Vite + AWS + TypeScript)
+# Claims Tracker App — Fullstack Serverless App (Vite + AWS + TypeScript)
 
-A lightweight insurance claims & projects management system built with an AWS-first, event-driven approach.
+A lightweight insurance claims tracker system built with an AWS-first approach.
 
-This repository contains a full-stack application for managing Projects and Claims.
+This repository contains a full-stack application for tracking claims
 
 - The **backend** runs on AWS Lambda with API Gateway and DynamoDB, using the Serverless Framework and TypeScript.
 - The **frontend** is a React + TypeScript app built with Vite, consuming the backend via a REST API.
