@@ -5,12 +5,6 @@ A claims-tracking MVP built using an AWS-first approach.
 This project is organized as a monorepo, containing both the frontend and backend applications in a single repository.
 Each app is fully isolated, has its own dependencies, its own build system, and can be developed or deployed independently.
 
-This repository contains
-
-- The **backend** runs on AWS Lambda with API Gateway and DynamoDB, using the Serverless Framework and TypeScript.
-- The **frontend** is a React + TypeScript app built with Vite, consuming the backend via a REST API.
-
-
 ---
 
 ## 📦 Table of Contents
