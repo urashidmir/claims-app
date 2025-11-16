@@ -84,11 +84,18 @@ cd frontend
 npm install
 ```
 
-### 2. Run the app
+### 2. Start Vite dev server
 
 ```bash
 npm run dev
 ```
+
+App runs at:
+
+```bash
+http://localhost:5173
+```
+
 
 ---
 
