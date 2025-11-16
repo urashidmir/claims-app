@@ -47,6 +47,8 @@ cd backend
 npm install
 ```
 
+### 2. Deploy to AWS
+
 2. Run locally (no AWS required)
 
 npm run offline
