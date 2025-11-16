@@ -1,6 +1,6 @@
 # Claims Tracker App — Fullstack Serverless App (Vite + AWS + TypeScript)
 
-A lightweight insurance claims tracker system built with an AWS-first approach.
+A claims tracker MVP built with an AWS-first approach.
 
 This repository contains a full-stack application for tracking claims
 
