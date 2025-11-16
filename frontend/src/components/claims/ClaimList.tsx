@@ -105,9 +105,7 @@ export function ClaimList() {
     { field: "createdAt", headerName: "Created", flex: 1 },
   ];
 
-  // -------------------------------
-  // Page Title
-  // -------------------------------
+
   const title = projectId
     ? projectLoading
       ? "Claims for project…"
