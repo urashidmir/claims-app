@@ -48,17 +48,19 @@ npm install
 
 ### 2. Configure AWS credentials
 
-### Option A — Using AWS CLI (recommended)
+#### Option A — Using AWS CLI (recommended)
 
 ```bash
 aws configure
 ```
 
-### Option B — Environment variables
+#### Option B — Environment variables
 
+```bash
 export AWS_ACCESS_KEY_ID=xxxx
 export AWS_SECRET_ACCESS_KEY=xxxx
 export AWS_REGION=us-east-1
+```
 
 
 ### 3. Deploy to AWS
