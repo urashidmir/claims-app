@@ -46,6 +46,44 @@ export const ClaimForm = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  const saveDraft = async () => {
+    setSuccess("");
+    setError("");
+
+    if (!project) {
+      setError("Invalid project selected.");
+      return;
+    }
+
+    try {
+      setSubmitLoading(true);
+
+      await apiRequest("/claims", {
+        method: "POST",
+        body: JSON.stringify({
+          projectId: project.projectId,
+          companyName: project.companyName,
+          status: "Draft",
+          claimPeriodStart: form.claimPeriodStart,
+          claimPeriodEnd: form.claimPeriodEnd,
+          amount: Number(form.amount),
+        }),
+      });
+
+      setSuccess("Claim created successfully!");
+      setForm({
+        claimPeriodStart: "",
+        claimPeriodEnd: "",
+        amount: "",
+      });
+
+    } catch (err: any) {
+      setError(err.message || "Failed to create claim.");
+    } finally {
+      setSubmitLoading(false);
+    }
+  };
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSuccess("");
@@ -66,6 +104,7 @@ export const ClaimForm = () => {
           companyName: project.companyName,
           claimPeriodStart: form.claimPeriodStart,
           claimPeriodEnd: form.claimPeriodEnd,
+          status: "Submitted",
           amount: Number(form.amount),
         }),
       });
@@ -159,6 +198,10 @@ export const ClaimForm = () => {
           fullWidth
           required
         />
+
+        <Button onClick={saveDraft} variant="outlined" disabled={submitLoading}>
+          Save as Draft
+        </Button>
 
         <Button type="submit" variant="contained" disabled={submitLoading}>
           {submitLoading ? "Submitting..." : "Submit Claim"}

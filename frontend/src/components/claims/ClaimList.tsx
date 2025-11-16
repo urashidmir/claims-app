@@ -26,7 +26,6 @@ export function ClaimList({ reloadKey }: ClaimListProps) {
   const [searchParams] = useSearchParams();
   const projectId = searchParams.get("projectId");
 
-  // 🔥 Get project details when projectId is present
   const {
     project,
     loading: projectLoading,
@@ -83,6 +82,7 @@ export function ClaimList({ reloadKey }: ClaimListProps) {
             updateStatus(params.row.claimId, e.target.value as Claim["status"])
           }
         >
+          <MenuItem value="Draft">Draft</MenuItem>
           <MenuItem value="Submitted">Submitted</MenuItem>
           <MenuItem value="Approved">Approved</MenuItem>
           <MenuItem value="Rejected">Rejected</MenuItem>

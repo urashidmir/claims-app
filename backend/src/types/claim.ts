@@ -16,6 +16,7 @@ export interface CreateClaimInput {
   claimPeriodStart: string;
   claimPeriodEnd: string;
   amount: number;
+  status: "Draft" | "Submitted";
 }
 
 export interface UpdateClaimInput {

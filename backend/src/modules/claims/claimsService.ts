@@ -18,15 +18,24 @@ export class ClaimsService {
   }
 
   async createClaim(input: CreateClaimInput): Promise<Claim> {
-    const { projectId, claimPeriodStart, claimPeriodEnd, amount } = input;
+    const { projectId, claimPeriodStart, claimPeriodEnd, amount, status } =
+      input;
 
-    if (!projectId) throw new ValidationError("ProjectId is required");
-    if (!claimPeriodStart)
+    if (!projectId) {
+      throw new ValidationError("ProjectId is required");
+    }
+    if (!claimPeriodStart) {
       throw new ValidationError("Claim Period Start is required");
-    if (!claimPeriodEnd)
+    }
+    if (!claimPeriodEnd) {
       throw new ValidationError("Claim Period End is required");
-    if (amount == null) throw new ValidationError("Amount is required");
-
+    }
+    if (amount == null) {
+      throw new ValidationError("Amount is required");
+    }
+    if (status && !["Draft", "Submitted"].includes(status)) {
+      throw new ValidationError("Invalid status value");
+    }
     if (isNaN(amount) || amount <= 0) {
       throw new ValidationError("Amount must be a positive number");
     }
@@ -56,6 +65,7 @@ export class ClaimsService {
       projectId,
       claimPeriodStart,
       claimPeriodEnd,
+      status,
       amount,
       companyName: project.companyName,
       projectName: project.projectName,

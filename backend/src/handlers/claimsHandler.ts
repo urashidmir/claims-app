@@ -21,6 +21,7 @@ export const createClaimHandler = async (
       projectId: body.projectId,
       claimPeriodStart: body.claimPeriodStart,
       claimPeriodEnd: body.claimPeriodEnd,
+      status: body.status,
       amount: Number(body.amount),
     };
 

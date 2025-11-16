@@ -21,7 +21,6 @@ export class ClaimsRepository {
     const item: Claim = {
       ...createEnrichedClaimInput,
       claimId: crypto.randomUUID(),
-      status: "Submitted",
       createdAt: now,
       updatedAt: now,
     };
