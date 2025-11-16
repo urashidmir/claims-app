@@ -146,3 +146,10 @@ Example: `useProject(projectId)`
 - Reusable across domain features  
 
 
+---
+
+## AI Usage Notes
+
+- ChatGpt was used to evaluate design decisions.
+- AI assisted with writing TypeScript types, React Query hooks, and error-handling patterns.
+- No AI-generated code was used without manual review and testing.
