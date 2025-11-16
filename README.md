@@ -96,6 +96,7 @@ App runs at:
 http://localhost:5173
 ```
 
+Frontend consumes the backend API via environment variable VITE_API_URL.
 
 ---
 
