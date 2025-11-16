@@ -1,5 +1,4 @@
-import { DataGrid } from "@mui/x-data-grid";
-import type { GridColDef } from "@mui/x-data-grid";
+import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import { Box } from "@mui/material";
 import type { Project } from "../../types/project";
 import { ProjectRowActions } from "./ProjectRowActions";
@@ -7,7 +6,12 @@ import { ProjectRowActions } from "./ProjectRowActions";
 const columns: GridColDef<Project>[] = [
   { field: "projectName", headerName: "Project Name", flex: 1 },
   { field: "companyName", headerName: "Company Name", flex: 1 },
-  { field: "createdAt", headerName: "Created At", flex: 1 },
+  { field: "createdAt", 
+    headerName: "Created At", 
+    flex: 1, 
+    valueFormatter: (value: string | null | undefined) =>
+      value ? value.split("T")[0] : "",
+},
   {
     field: "actions",
     headerName: "Actions",

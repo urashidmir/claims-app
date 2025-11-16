@@ -1,5 +1,4 @@
-import { DataGrid } from "@mui/x-data-grid";
-import type { GridColDef } from "@mui/x-data-grid";
+import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import {
   Paper,
   Typography,
@@ -18,7 +17,7 @@ import {
 } from "@tanstack/react-query";
 import { apiRequest } from "../../api/apiClient";
 
-export function ClaimList() {
+export const ClaimList= () => {
   const [searchParams] = useSearchParams();
   const projectId = searchParams.get("projectId") ?? undefined;
 
@@ -102,7 +101,13 @@ export function ClaimList() {
     },
     { field: "claimPeriodStart", headerName: "Period Start", flex: 1 },
     { field: "claimPeriodEnd", headerName: "Period End", flex: 1 },
-    { field: "createdAt", headerName: "Created", flex: 1 },
+    { 
+      field: "createdAt", 
+      headerName: "Created At", 
+      flex: 1,
+      valueFormatter: (value: string | null | undefined) =>
+        value ? value.split("T")[0] : "", 
+    },
   ];
 
 
