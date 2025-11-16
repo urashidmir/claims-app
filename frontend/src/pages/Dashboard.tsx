@@ -1,4 +1,3 @@
-import React from "react";
 import { ProjectsPage } from "./ProjectsPage";  
 import { ClaimsPage } from "./ClaimsPage";
 
