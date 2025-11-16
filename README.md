@@ -68,13 +68,12 @@ export AWS_REGION=us-east-1
 ```bash
 npm run deploy
 ```
+This deploys:
 
-
-Option B — Using environment variables
-export AWS_ACCESS_KEY_ID=xxxx
-export AWS_SECRET_ACCESS_KEY=xxxx
-export AWS_REGION=us-east-1
-npm run deploy
+- Lambda functions
+- API Gateway HTTP routes
+- DynamoDB tables
+- GSIs (ProjectIdIndex for claims-by-project queries)
 
 
 ## ▶ Running the Frontend (React)
