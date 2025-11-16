@@ -173,20 +173,28 @@ Example: `useProject(projectId)`
 
 ## 🤖 AI Usage Notes
 
-- ChatGpt was used to evaluate design decisions.
-- AI assisted with writing TypeScript types, React Query hooks, and error-handling patterns.
-- No AI-generated code was used without manual review and testing.
+- ChatGPT was used to review architecture and design patterns.
+- AI assisted with TypeScript types, error-handling and debugging.
+- All AI-generated code was manually reviewed, optimized, and verified before committing.
 
 ---
 
-## 🤖 Improvements With More Time
+## 🚀 Improvements With More Time
 
 ### 🟨 1. Authentication and Authorization
 
 ### 🟨 2. Validation layer
+- Add Zod schemas
+- Share types between FE & BE
 
 ### 🟨 3. Optimistic updates
+Improve user experience with instant state updates.
 
 ### 🟨 4. Automated Testing
+- Unit tests for handlers/services
+- E2E tests for API
 
 ### 🟨 5. CI/CD
+- GitHub Actions
+- Automated test + deploy pipeline
+
