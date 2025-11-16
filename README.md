@@ -49,21 +49,10 @@ npm install
 
 ### 2. Deploy to AWS
 
-2. Run locally (no AWS required)
-
-npm run offline
-
-Starts:
-
-serverless-offline on port 5000
-
-DynamoDB Local on port 8000
-
-3. Deploy to AWS (optional)
-
-Option A — Using AWS Profile
-
+```bash
 npm run deploy
+```
+
 
 Option B — Using environment variables
 export AWS_ACCESS_KEY_ID=xxxx
