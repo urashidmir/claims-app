@@ -20,7 +20,7 @@ export default function App() {
           >
             {/* Title on its own row */}
             <Typography variant="h6" sx={{ textAlign: "center" }}>
-              Claims Management Portal
+              Claims Tracker Portal
             </Typography>
 
             {/* Nav buttons row */}
