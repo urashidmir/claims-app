@@ -7,10 +7,9 @@ import App from './App.tsx'
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      // how React Query behaves by default – tweak later if you like
       retry: 1,
       refetchOnWindowFocus: false,
-      staleTime: 15_000, // data is "fresh" for 15s
+      staleTime: 15_000,
     },
   },
 });

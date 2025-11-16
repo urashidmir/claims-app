@@ -23,7 +23,6 @@ export const ClaimList= () => {
 
   const queryClient = useQueryClient();
 
-
   const {
     data: project,
     isLoading: projectLoading,

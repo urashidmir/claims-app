@@ -18,9 +18,7 @@ export const ProjectsPage = () => {
       }}
     >
       <h2 style={{ marginBottom: "1rem" }}>Projects</h2>
-
       <ProjectForm onCreated={triggerReload} />
-
       <ProjectList reloadKey={reloadFlag} />
     </div>
   );

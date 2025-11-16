@@ -13,17 +13,15 @@ export default function App() {
         <AppBar position="sticky" color="primary">
           <Toolbar
             sx={{
-              flexDirection: "column",          // title on top, buttons below
+              flexDirection: "column",          
               alignItems: "center",
               gap: 1,
             }}
           >
-            {/* Title on its own row */}
             <Typography variant="h6" sx={{ textAlign: "center" }}>
               Claims Tracker Portal
             </Typography>
 
-            {/* Nav buttons row */}
             <Box sx={{ display: "flex", gap: 3 }}>
               <Button component={Link} to="/projects" color="inherit">
                 Projects
