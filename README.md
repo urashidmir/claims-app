@@ -46,7 +46,22 @@ cd backend
 npm install
 ```
 
-### 2. Deploy to AWS
+### 2. Configure AWS credentials
+
+### Option A — Using AWS CLI (recommended)
+
+```bash
+aws configure
+```
+
+### Option B — Environment variables
+
+export AWS_ACCESS_KEY_ID=xxxx
+export AWS_SECRET_ACCESS_KEY=xxxx
+export AWS_REGION=us-east-1
+
+
+### 3. Deploy to AWS
 
 ```bash
 npm run deploy
