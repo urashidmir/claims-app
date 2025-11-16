@@ -7,18 +7,29 @@ import {
   Typography,
   Alert,
 } from "@mui/material";
-import { apiRequest } from "../../api/apiClient";
 import { useSearchParams, useNavigate } from "react-router-dom";
-
 import { useProject } from "../../hooks/useProject";
+import { useCreateClaim } from "../../api/mutations/claims";
 
 export const ClaimForm = () => {
   const [searchParams] = useSearchParams();
-  const projectIdFromUrl = searchParams.get("projectId");
+  const projectIdFromUrl = searchParams.get("projectId") ?? undefined;
   const navigate = useNavigate();
 
-  const { project, loading: projectLoading, error: projectError } =
-    useProject(projectIdFromUrl);
+
+  useEffect(() => {
+    if (!projectIdFromUrl) navigate("/projects");
+  }, [projectIdFromUrl, navigate]);
+
+  const {
+    data: project,
+    isLoading: projectLoading,
+    isError: projectIsError,
+    error: projectError,
+  } = useProject(projectIdFromUrl);
+
+
+  const createClaimMutation = useCreateClaim();
 
   const [form, setForm] = useState({
     claimPeriodStart: "",
@@ -26,76 +37,33 @@ export const ClaimForm = () => {
     amount: "",
   });
 
-  const [submitLoading, setSubmitLoading] = useState(false);
-  const [success, setSuccess] = useState("");
-  const [error, setError] = useState("");
-
-
-  useEffect(() => {
-    if (!projectIdFromUrl) {
-      navigate("/projects");
-    }
-  }, [projectIdFromUrl, navigate]);
-
-
-  useEffect(() => {
-    if (projectError) setError(projectError);
-  }, [projectError]);
-
   const updateField = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const createClaim = async (status: "Draft" | "Submitted") => {
-    setError("");
-    setSuccess("");
+  const handleCreate = (status: "Draft" | "Submitted") => {
+    if (!project) return;
 
-    if (!project) {
-      setError("Invalid project selected.");
-      return;
-    }
-
-    try {
-      setSubmitLoading(true);
-
-      await apiRequest("/claims", {
-        method: "POST",
-        body: JSON.stringify({
-          projectId: project.projectId,
-          companyName: project.companyName,
-          claimPeriodStart: form.claimPeriodStart || null,
-          claimPeriodEnd: form.claimPeriodEnd || null,
-          amount: form.amount ? Number(form.amount) : null,
-          status,
-        }),
-      });
-
-      setSuccess(
-        status === "Draft"
-          ? "Draft saved!"
-          : "Claim submitted successfully!"
-      );
-
-      setForm({
-        claimPeriodStart: "",
-        claimPeriodEnd: "",
-        amount: "",
-      });
-    } catch (err: unknown) {
-          setError(
-            err instanceof Error
-              ? err.message
-              : "Failed to create claim.",
-          );
-    } finally {
-      setSubmitLoading(false);
-    }
+    createClaimMutation.mutate({
+      projectId: project.projectId,
+      companyName: project.companyName,
+      claimPeriodStart: form.claimPeriodStart,
+      claimPeriodEnd: form.claimPeriodEnd,
+      amount: Number(form.amount),  
+      status,
+    }, {
+      onSuccess: () => {
+        // Reset form after success
+        setForm({ claimPeriodStart: "", claimPeriodEnd: "", amount: "" });
+      }
+    });
   };
 
-  const submit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    createClaim("Submitted");
+    handleCreate("Submitted");
   };
+
 
   if (projectLoading) {
     return (
@@ -106,25 +74,36 @@ export const ClaimForm = () => {
     );
   }
 
-  if (!project) {
+  if (projectIsError || !project) {
     return (
       <Paper sx={{ p: 2 }}>
         <Typography variant="h6">Create New Claim</Typography>
         <Alert severity="error" sx={{ mt: 2 }}>
-          {error || "Invalid project."}
+          {(projectError as Error)?.message || "Invalid project."}
         </Alert>
       </Paper>
     );
   }
 
   return (
-    <Paper component="form" onSubmit={submit} sx={{ p: 2, mb: 2 }}>
+    <Paper component="form" onSubmit={handleSubmit} sx={{ p: 2, mb: 2 }}>
       <Typography variant="h6" mb={2}>
         Create New Claim
       </Typography>
 
-      {success && <Alert severity="success">{success}</Alert>}
-      {error && <Alert severity="error">{error}</Alert>}
+
+      {createClaimMutation.isSuccess && (
+        <Alert severity="success">
+          Claim {createClaimMutation.variables?.status === "Draft" ? "saved as draft!" : "submitted successfully!"}
+        </Alert>
+      )}
+
+
+      {createClaimMutation.isError && (
+        <Alert severity="error">
+          {(createClaimMutation.error as Error).message ?? "Failed to create claim."}
+        </Alert>
+      )}
 
       <Stack spacing={2} mt={2}>
         <TextField
@@ -172,18 +151,24 @@ export const ClaimForm = () => {
           fullWidth
           required
         />
-         <Stack direction="row" spacing={2}>
-          <Button 
-            onClick={() => createClaim("Draft")}
-            variant="outlined" 
-            disabled={submitLoading}>
+
+        <Stack direction="row" spacing={2}>
+          <Button
+            onClick={() => handleCreate("Draft")}
+            variant="outlined"
+            disabled={createClaimMutation.isPending}
+          >
             Save as Draft
           </Button>
 
-          <Button type="submit" variant="contained" disabled={submitLoading}>
-            {submitLoading ? "Submitting..." : "Submit Claim"}
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={createClaimMutation.isPending}
+          >
+            {createClaimMutation.isPending ? "Submitting..." : "Submit Claim"}
           </Button>
-         </Stack>
+        </Stack>
       </Stack>
     </Paper>
   );

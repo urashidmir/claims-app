@@ -1,11 +1,18 @@
-import { useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import type { GridColDef } from "@mui/x-data-grid";
-import { Paper, Typography, CircularProgress, Alert, Stack, Button, Box } from "@mui/material";
-import { apiRequest } from "../../api/apiClient";
+import {
+  Paper,
+  Typography,
+  CircularProgress,
+  Alert,
+  Stack,
+  Button,
+  Box,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import type { Project } from "../../types/project";
-
+import { useQuery } from "@tanstack/react-query";
+import { fetchProjects } from "../../api/queries/projects";
 
 interface ProjectListProps {
   reloadKey: number;
@@ -18,16 +25,13 @@ const columns: GridColDef<Project>[] = [
     field: "createdAt",
     headerName: "Created At",
     flex: 1,
-    //valueGetter: (params) => new Date(params.row.createdAt).toLocaleString(),
   },
   {
     field: "actions",
     headerName: "Actions",
     flex: 1,
     sortable: false,
-    renderCell: (params) => (
-      <ActionButtons row={params.row} />
-    ),
+    renderCell: (params) => <ActionButtons row={params.row} />,
   },
 ];
 
@@ -55,32 +59,16 @@ const ActionButtons = ({ row }: { row: Project }) => {
   );
 };
 
-
 export function ProjectList({ reloadKey }: ProjectListProps) {
-  const [rows, setRows] = useState<Project[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  const loadProjects = async () => {
-    try {
-      setLoading(true);
-      setError("");
-      const data = await apiRequest<Project[]>("/projects");
-      setRows(data);
-    } catch (err: unknown) {
-          setError(
-            err instanceof Error
-              ? err.message
-              : "Failed to load projects",
-          );
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    loadProjects();
-  }, [reloadKey]);
+  const {
+    data: rows = [],
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["projects", reloadKey],
+    queryFn: fetchProjects,
+  });
 
   return (
     <Paper sx={{ p: { xs: 2, sm: 3 } }}>
@@ -88,22 +76,25 @@ export function ProjectList({ reloadKey }: ProjectListProps) {
         Projects
       </Typography>
 
-      {error && <Alert severity="error">{error}</Alert>}
-      {loading && <CircularProgress size={28} sx={{ mb: 2 }} />}
+      {isError && (
+        <Alert severity="error">{(error as Error).message}</Alert>
+      )}
+
+      {isLoading && <CircularProgress size={28} sx={{ mb: 2 }} />}
 
       <Box
         sx={{
           width: "100%",
           height: { xs: 380, sm: 420 },
-          overflowX: "auto", // horizontal scroll on tiny screens
+          overflowX: "auto",
         }}
       >
         <DataGrid
           rows={rows}
           columns={columns}
           getRowId={(row) => row.projectId}
-          loading={loading}
           disableRowSelectionOnClick
+          loading={isLoading}
           sx={{
             ".MuiDataGrid-columnHeaderTitle": { fontWeight: "bold" },
           }}

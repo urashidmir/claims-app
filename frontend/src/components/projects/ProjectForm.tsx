@@ -7,7 +7,7 @@ import {
   Typography,
   Alert,
 } from "@mui/material";
-import { apiRequest } from "../../api/apiClient";
+import { useCreateProject } from "../../api/mutations/projects";
 
 interface ProjectFormProps {
   onCreated: () => void;
@@ -16,40 +16,24 @@ interface ProjectFormProps {
 export const ProjectForm = ({ onCreated }: ProjectFormProps) => {
   const [projectName, setProjectName] = useState("");
   const [companyName, setCompanyName] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState("");
-  const [error, setError] = useState("");
 
-  const submit = async (e: React.FormEvent) => {
+  const createProject = useCreateProject();
+
+  const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    setSuccess("");
-    setError("");
 
     if (!projectName.trim()) return;
 
-    try {
-      setLoading(true);
-
-      await apiRequest("/projects", {
-        method: "POST",
-        body: JSON.stringify({ projectName, companyName }),
-      });
-
-      setSuccess("Project created successfully!");
-      setProjectName("");
-      setCompanyName("");
-
-
-      onCreated();
-    } catch (err: unknown) {
-          setError(
-            err instanceof Error
-              ? err.message
-              : "Failed to create project",
-          );
-    } finally {
-      setLoading(false);
-    }
+    createProject.mutate(
+      { projectName, companyName },
+      {
+        onSuccess: () => {
+          setProjectName("");
+          setCompanyName("");
+          onCreated();
+        },
+      }
+    );
   };
 
   return (
@@ -58,8 +42,15 @@ export const ProjectForm = ({ onCreated }: ProjectFormProps) => {
         Create New Project
       </Typography>
 
-      {success && <Alert severity="success">{success}</Alert>}
-      {error && <Alert severity="error">{error}</Alert>}
+      {createProject.isSuccess && (
+        <Alert severity="success">Project created successfully!</Alert>
+      )}
+
+      {createProject.isError && (
+        <Alert severity="error">
+          {(createProject.error as Error).message}
+        </Alert>
+      )}
 
       <Stack
         direction={{ xs: "column", sm: "row" }}
@@ -83,17 +74,16 @@ export const ProjectForm = ({ onCreated }: ProjectFormProps) => {
           required
         />
 
-        {/* Button goes full-width on mobile */}
         <Button
           type="submit"
           variant="contained"
-          disabled={loading}
+          disabled={createProject.isPending}
           sx={{
             minWidth: { xs: "100%", sm: "120px" },
             height: "fit-content",
           }}
         >
-          {loading ? "Creating..." : "Create"}
+          {createProject.isPending ? "Creating..." : "Create"}
         </Button>
       </Stack>
     </Paper>

@@ -4,3 +4,8 @@ export interface Project {
   companyName: string;
   createdAt: string;
 }
+
+export interface CreateProjectInput {
+  projectName: string;
+  companyName: string;
+}

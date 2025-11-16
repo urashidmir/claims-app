@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import type { GridColDef } from "@mui/x-data-grid";
 import {
@@ -9,63 +8,71 @@ import {
   MenuItem,
   Select,
 } from "@mui/material";
-import { apiRequest } from "../../api/apiClient";
 import type { Claim } from "../../types/claim";
 import { useSearchParams } from "react-router-dom";
-import { useProject } from "../../hooks/useProject"; 
-
+import { useProject } from "../../hooks/useProject";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
+import { apiRequest } from "../../api/apiClient";
 
 export function ClaimList() {
-  const [rows, setRows] = useState<Claim[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
   const [searchParams] = useSearchParams();
-  const projectId = searchParams.get("projectId");
+  const projectId = searchParams.get("projectId") ?? undefined;
+
+  const queryClient = useQueryClient();
+
 
   const {
-    project,
-    loading: projectLoading,
+    data: project,
+    isLoading: projectLoading,
+    isError: projectIsError,
     error: projectError,
   } = useProject(projectId);
 
-  const loadClaims = async () => {
-    try {
-      setLoading(true);
-      setError("");
-
+  const {
+    data: rows = [],
+    isLoading: claimsLoading,
+    isError: claimsIsError,
+    error: claimsError,
+  } = useQuery<Claim[], Error>({
+    queryKey: ["claims", projectId],
+    queryFn: () => {
       const endpoint = projectId
         ? `/claims?projectId=${projectId}`
         : "/claims";
+      return apiRequest<Claim[]>(endpoint);
+    },
+  });
 
-      const data = await apiRequest<Claim[]>(endpoint);
-      setRows(data);
-    } catch (err: unknown) {
-          setError(
-            err instanceof Error
-              ? err.message
-              : "Failed to load claims.",
-          );
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  useEffect(() => {
-    loadClaims();
-  }, [projectId]);
-
-  const updateStatus = async (id: string, status: Claim["status"]) => {
-    try {
-      await apiRequest(`/claims/${id}`, {
+  const updateStatusMutation = useMutation({
+    mutationFn: ({
+      id,
+      status,
+    }: {
+      id: string;
+      status: Claim["status"];
+    }) =>
+      apiRequest<Claim>(`/claims/${id}`, {
         method: "PATCH",
         body: JSON.stringify({ status }),
+      }),
+
+    onSuccess: (updatedClaim) => {
+      queryClient.invalidateQueries({
+        queryKey: ["claims", updatedClaim.projectId],
       });
-      loadClaims();
-    } catch (err) {
-      console.error("Failed to update status", err);
-    }
-  };
+
+
+      queryClient.invalidateQueries({
+        queryKey: ["claim", updatedClaim.claimId],
+      });
+    },
+  });
+
 
   const columns: GridColDef<Claim>[] = [
     { field: "companyName", headerName: "Company", flex: 1 },
@@ -80,7 +87,10 @@ export function ClaimList() {
           size="small"
           value={params.row.status}
           onChange={(e) =>
-            updateStatus(params.row.claimId, e.target.value as Claim["status"])
+            updateStatusMutation.mutate({
+              id: params.row.claimId,
+              status: e.target.value as Claim["status"],
+            })
           }
         >
           <MenuItem value="Draft">Draft</MenuItem>
@@ -95,6 +105,9 @@ export function ClaimList() {
     { field: "createdAt", headerName: "Created", flex: 1 },
   ];
 
+  // -------------------------------
+  // Page Title
+  // -------------------------------
   const title = projectId
     ? projectLoading
       ? "Claims for project…"
@@ -103,25 +116,37 @@ export function ClaimList() {
       : "Claims for selected project"
     : "All Claims";
 
+  const isBusy =
+    claimsLoading || projectLoading || updateStatusMutation.isPending;
+
+
   return (
     <Paper sx={{ p: 2 }}>
       <Typography variant="h6" mb={2}>
         {title}
       </Typography>
 
-      {/* Project-level error (e.g. project not found) */}
-      {projectError && (
+      {projectIsError && (
         <Alert severity="error" sx={{ mb: 1 }}>
-          {projectError}
+          {(projectError as Error).message ??
+            "Failed to load project."}
         </Alert>
       )}
 
-      {/* Claims-level error */}
-      {error && <Alert severity="error">{error}</Alert>}
-
-      {(loading || projectLoading) && (
-        <CircularProgress size={28} sx={{ mb: 2 }} />
+      {claimsIsError && (
+        <Alert severity="error" sx={{ mb: 1 }}>
+          {(claimsError as Error).message ?? "Failed to load claims."}
+        </Alert>
       )}
+
+      {updateStatusMutation.isError && (
+        <Alert severity="error" sx={{ mb: 1 }}>
+          {(updateStatusMutation.error as Error).message ??
+            "Failed to update claim status."}
+        </Alert>
+      )}
+
+      {isBusy && <CircularProgress size={28} sx={{ mb: 2 }} />}
 
       <div style={{ height: 450, width: "100%" }}>
         <DataGrid
@@ -129,6 +154,7 @@ export function ClaimList() {
           columns={columns}
           getRowId={(row) => row.claimId}
           disableRowSelectionOnClick
+          loading={isBusy}
           sx={{
             ".MuiDataGrid-columnHeaderTitle": { fontWeight: "bold" },
           }}
