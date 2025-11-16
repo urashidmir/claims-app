@@ -10,7 +10,7 @@ import {
 import { apiRequest } from "../../api/apiClient";
 import { useSearchParams, useNavigate } from "react-router-dom";
 
-import { useProject } from "../../hooks/useProject"; // <-- IMPORTANT!
+import { useProject } from "../../hooks/useProject";
 
 export const ClaimForm = () => {
   const [searchParams] = useSearchParams();
@@ -46,9 +46,9 @@ export const ClaimForm = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const saveDraft = async () => {
-    setSuccess("");
+  const createClaim = async (status: "Draft" | "Submitted") => {
     setError("");
+    setSuccess("");
 
     if (!project) {
       setError("Invalid project selected.");
@@ -63,64 +63,38 @@ export const ClaimForm = () => {
         body: JSON.stringify({
           projectId: project.projectId,
           companyName: project.companyName,
-          status: "Draft",
-          claimPeriodStart: form.claimPeriodStart,
-          claimPeriodEnd: form.claimPeriodEnd,
-          amount: Number(form.amount),
+          claimPeriodStart: form.claimPeriodStart || null,
+          claimPeriodEnd: form.claimPeriodEnd || null,
+          amount: form.amount ? Number(form.amount) : null,
+          status,
         }),
       });
 
-      setSuccess("Claim created successfully!");
+      setSuccess(
+        status === "Draft"
+          ? "Draft saved!"
+          : "Claim submitted successfully!"
+      );
+
       setForm({
         claimPeriodStart: "",
         claimPeriodEnd: "",
         amount: "",
       });
-
-    } catch (err: any) {
-      setError(err.message || "Failed to create claim.");
+    } catch (err: unknown) {
+          setError(
+            err instanceof Error
+              ? err.message
+              : "Failed to create claim.",
+          );
     } finally {
       setSubmitLoading(false);
     }
   };
 
-  const submit = async (e: React.FormEvent) => {
+  const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    setSuccess("");
-    setError("");
-
-    if (!project) {
-      setError("Invalid project selected.");
-      return;
-    }
-
-    try {
-      setSubmitLoading(true);
-
-      await apiRequest("/claims", {
-        method: "POST",
-        body: JSON.stringify({
-          projectId: project.projectId,
-          companyName: project.companyName,
-          claimPeriodStart: form.claimPeriodStart,
-          claimPeriodEnd: form.claimPeriodEnd,
-          status: "Submitted",
-          amount: Number(form.amount),
-        }),
-      });
-
-      setSuccess("Claim created successfully!");
-      setForm({
-        claimPeriodStart: "",
-        claimPeriodEnd: "",
-        amount: "",
-      });
-
-    } catch (err: any) {
-      setError(err.message || "Failed to create claim.");
-    } finally {
-      setSubmitLoading(false);
-    }
+    createClaim("Submitted");
   };
 
   if (projectLoading) {
@@ -198,14 +172,18 @@ export const ClaimForm = () => {
           fullWidth
           required
         />
+         <Stack direction="row" spacing={2}>
+          <Button 
+            onClick={() => createClaim("Draft")}
+            variant="outlined" 
+            disabled={submitLoading}>
+            Save as Draft
+          </Button>
 
-        <Button onClick={saveDraft} variant="outlined" disabled={submitLoading}>
-          Save as Draft
-        </Button>
-
-        <Button type="submit" variant="contained" disabled={submitLoading}>
-          {submitLoading ? "Submitting..." : "Submit Claim"}
-        </Button>
+          <Button type="submit" variant="contained" disabled={submitLoading}>
+            {submitLoading ? "Submitting..." : "Submit Claim"}
+          </Button>
+         </Stack>
       </Stack>
     </Paper>
   );

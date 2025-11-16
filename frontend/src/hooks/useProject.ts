@@ -24,9 +24,13 @@ export function useProject(projectId?: string | null) {
         if (!cancelled) {
           setProject(data);
         }
-      } catch (err: any) {
+      } catch (err: unknown) {
         if (!cancelled) {
-          setError(err.message || "Failed to load project");
+          setError(
+            err instanceof Error
+              ? err.message
+              : "Failed to load project",
+          );
         }
       } finally {
         if (!cancelled) setLoading(false);

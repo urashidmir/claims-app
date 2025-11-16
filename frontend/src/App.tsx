@@ -34,7 +34,7 @@ export default function App() {
             </Box>
           </Toolbar>
         </AppBar>
-
+        <Container maxWidth="lg">
           <Box sx={{ px: { xs: 2, sm: 3 }, py: 3 }}>
             <Routes>
               <Route path="/" element={<ProjectsPage />} />
@@ -43,7 +43,7 @@ export default function App() {
               <Route path="/claims/new" element={<ClaimForm />} />
             </Routes>
           </Box>
-
+        </Container>
       </BrowserRouter>
     </ThemeProvider>
   );

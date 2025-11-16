@@ -12,13 +12,10 @@ import {
 import { apiRequest } from "../../api/apiClient";
 import type { Claim } from "../../types/claim";
 import { useSearchParams } from "react-router-dom";
-import { useProject } from "../../hooks/useProject"; // ⬅️ adjust path if needed
+import { useProject } from "../../hooks/useProject"; 
 
-interface ClaimListProps {
-  reloadKey: number;
-}
 
-export function ClaimList({ reloadKey }: ClaimListProps) {
+export function ClaimList() {
   const [rows, setRows] = useState<Claim[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -32,7 +29,7 @@ export function ClaimList({ reloadKey }: ClaimListProps) {
     error: projectError,
   } = useProject(projectId);
 
-  const load = async () => {
+  const loadClaims = async () => {
     try {
       setLoading(true);
       setError("");
@@ -43,16 +40,20 @@ export function ClaimList({ reloadKey }: ClaimListProps) {
 
       const data = await apiRequest<Claim[]>(endpoint);
       setRows(data);
-    } catch (err: any) {
-      setError(err.message || "Failed to load claims.");
+    } catch (err: unknown) {
+          setError(
+            err instanceof Error
+              ? err.message
+              : "Failed to load claims.",
+          );
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    load();
-  }, [reloadKey, projectId]);
+    loadClaims();
+  }, [projectId]);
 
   const updateStatus = async (id: string, status: Claim["status"]) => {
     try {
@@ -60,7 +61,7 @@ export function ClaimList({ reloadKey }: ClaimListProps) {
         method: "PATCH",
         body: JSON.stringify({ status }),
       });
-      load();
+      loadClaims();
     } catch (err) {
       console.error("Failed to update status", err);
     }

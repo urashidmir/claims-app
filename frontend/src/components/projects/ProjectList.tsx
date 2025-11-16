@@ -67,8 +67,12 @@ export function ProjectList({ reloadKey }: ProjectListProps) {
       setError("");
       const data = await apiRequest<Project[]>("/projects");
       setRows(data);
-    } catch (err: any) {
-      setError(err.message || "Failed to load projects.");
+    } catch (err: unknown) {
+          setError(
+            err instanceof Error
+              ? err.message
+              : "Failed to load projects",
+          );
     } finally {
       setLoading(false);
     }

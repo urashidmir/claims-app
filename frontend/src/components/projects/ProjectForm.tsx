@@ -41,8 +41,12 @@ export const ProjectForm = ({ onCreated }: ProjectFormProps) => {
 
 
       onCreated();
-    } catch (err: any) {
-      setError(err.message || "Failed to create project.");
+    } catch (err: unknown) {
+          setError(
+            err instanceof Error
+              ? err.message
+              : "Failed to create project",
+          );
     } finally {
       setLoading(false);
     }
