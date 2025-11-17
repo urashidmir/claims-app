@@ -139,7 +139,7 @@ The backend follows a layered architecture:
 
 Benefits:
 
-- Easier unit testing
+- Test-friendly structure
 - Encapsulated data access logic
 - Possible future migrations (e.g., RDS or DocumentDB) with minimal API changes
 
