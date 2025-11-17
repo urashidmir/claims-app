@@ -157,7 +157,7 @@ This grounding ensures both the data model and user flow resemble real-world cla
 
 One spec line also introduced ambiguity:
 
-```PATCH /projects/:id – update project or associated claims”```
+`PATCH /projects/:id – update project or associated claims`
 
 The requirement doesn't define what “update associated claims” should actually do—whether it means reassigning claims, applying bulk status updates, cascading name changes, etc.
 
