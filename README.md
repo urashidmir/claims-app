@@ -173,8 +173,8 @@ If needed in a full production system, the **/projects/:id** endpoint could be e
 ### 🟨 6. React Query for Data Fetching & Caching
 React Query was chosen for:
 
-- Automatic caching of projects and claims
-- Background refetching
+- Automatic caching of **projects** and **claims** data
+- Background refetching to keep data fresh
 - Smoother UI updates
 - Simplified loading/error state management
 - Built-in invalidation on mutations (create/update claim/project)
@@ -189,7 +189,6 @@ Example: `useProject(projectId)` centralizes:
 - Reusability across pages
 
 This keeps React components clean and focused on UI.
-
 
 ---
 
