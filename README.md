@@ -159,12 +159,12 @@ One spec line also introduced ambiguity:
 
 ```PATCH /projects/:id – update project or associated claims”```
 
-In this domain, a claim is “associated” when claim.projectId === projectId, but the requirement doesn't define what “update associated claims” should actually do—whether it means reassigning claims, applying bulk status updates, cascading name changes, etc.
+The requirement doesn't define what “update associated claims” should actually do—whether it means reassigning claims, applying bulk status updates, cascading name changes, etc.
 
 For this MVP, I kept responsibilities clear and predictable:
 
-- Project updates are handled at PATCH /projects/:id
-- Claim updates are handled at PATCH /claims/:id
+- **Project updates** are handled at PATCH /projects/:id
+- **Claim updates** are handled at PATCH /claims/:id
 
 If needed in a full production system, the /projects/:id endpoint could be extended to support bulk claim operations, but those behaviours would require explicit requirements.
 
