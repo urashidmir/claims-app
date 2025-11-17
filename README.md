@@ -146,14 +146,27 @@ Benefits:
 ---
 
 ### 🟨 5. Realistic Domain Modeling
-The original problem statement was intentionally open-ended. I modelled the domain using typical enterprise patterns:
+The original problem statement was open-ended. I modelled the domain using typical enterprise patterns:
 - A **Company** has many **Projects**
 - A **Project** has many **Claims**
 - **Claims** reference both projectId and its company name (later removed for normalization)
 - UI pages reflect these relationships:
-    Project list → Project detail → Claims list → Claim form
+    **Project list → Project detail → Claims list → Claim form**
 
-This grounded approach ensures the UI and data model match typical enterprise claim processes.
+This grounding ensures both the data model and user flow resemble real-world claim-management systems.
+
+One spec line also introduced ambiguity:
+
+```PATCH /projects/:id – update project or associated claims”```
+
+In this domain, a claim is “associated” when claim.projectId === projectId, but the requirement doesn't define what “update associated claims” should actually do—whether it means reassigning claims, applying bulk status updates, cascading name changes, etc.
+
+For this MVP, I kept responsibilities clear and predictable:
+
+- Project updates are handled at PATCH /projects/:id
+- Claim updates are handled at PATCH /claims/:id
+
+If needed in a full production system, the /projects/:id endpoint could be extended to support bulk claim operations, but those behaviours would require explicit requirements.
 
 ---
 
