@@ -166,7 +166,7 @@ For this MVP, I kept responsibilities clear and predictable:
 - **Project updates** are handled at `PATCH /projects/:id`
 - **Claim updates** are handled at `PATCH /claims/:id`
 
-If needed in a full production system, the /projects/:id endpoint could be extended to support bulk claim operations, but those behaviours would require explicit requirements.
+If needed in a full production system, the **/projects/:id** endpoint could be extended according to explicit requirements.
 
 ---
 
