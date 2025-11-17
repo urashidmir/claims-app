@@ -102,7 +102,7 @@ Frontend consumes the backend API via environment variable VITE_API_URL.
 ## 🏗 Architecture Decisions
 
 ### 🟦 1. Monorepo Structure (Frontend + Backend in one repo)
-I chose a monorepo structure to keep the frontend and backend codebases close together. This makes it easier to share domain knowledge, onboard quickly, test end-to-end flows, and evolve the domain (Company → Project → Claim) consistently. Both apps are isolated (their own package.json) but versioned and managed in a single repository.
+I chose a monorepo structure to keep the frontend and backend codebases close together. This makes it easier to share domain knowledge, onboard quickly, test end-to-end flows, and evolve the domain **(Company → Project → Claim)** consistently. Both apps are isolated (their own **package.json**) but versioned and managed in a single repository.
 
 ---
 
