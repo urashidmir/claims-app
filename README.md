@@ -114,7 +114,7 @@ The backend uses the Serverless Framework with AWS Lambda + API Gateway, chosen 
 - Auto-scaling
 - Simple deployment pipeline
 
-Handlers are intentionally thin, delegating logic to service and repository layers for testability.
+**Handlers** are intentionally thin, delegating logic to **service** and **repository** layers for testability.
 
 ---
 
