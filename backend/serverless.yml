@@ -60,22 +60,6 @@ functions:
           method: patch
           cors: ${self:custom.cors}
 
-  deleteClaim:
-    handler: src/handlers/claimsHandler.deleteClaimHandler
-    events:
-      - http:
-          path: claims/{id}
-          method: delete
-          cors: ${self:custom.cors}
-
-  updateClaimStatus:
-    handler: src/handlers/claimsHandler.updateClaimStatusHandler
-    events:
-      - http:
-          path: claims/{id}/status
-          method: patch
-          cors: ${self:custom.cors}
-
   # PROJECTS
   createProject:
     handler: src/handlers/projectsHandler.createProjectHandler
@@ -107,14 +91,6 @@ functions:
       - http:
           path: projects/{id}
           method: patch
-          cors: ${self:custom.cors}
-
-  deleteProject:
-    handler: src/handlers/projectsHandler.deleteProjectHandler
-    events:
-      - http:
-          path: projects/{id}
-          method: delete
           cors: ${self:custom.cors}
 
 resources:
